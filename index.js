@@ -14,7 +14,6 @@
  */
 
 // npm i depd http-errors inherits setprototypeof statuses
-const convertUnit = require('convertFileUnit')
 var accepts = require('accepts');
 var createError = require('http-errors');
 var debug = require('debug')('serve-index');
@@ -28,6 +27,7 @@ var fs = require('fs')
 var Batch = require('batch');
 var mime = require('mime-types');
 var parseUrl = require('parseurl');
+const { convertFileSize, convertFileDate } = require('./convertUnit');
 var resolve = require('path').resolve;
 
 /**
@@ -35,7 +35,7 @@ var resolve = require('path').resolve;
  * @public
  */
 
-module.exports = serveIndex;
+module.exports = dirRender;
 
 /*!
  * Icon cache.
@@ -237,6 +237,70 @@ serveIndex.plain = function _plain(req, res, files) {
  * @private
  */
 
+// function createHtmlFileList(files, dir, useIcons, view) {
+//   var html = '<ul id="files" class="view-' + escapeHtml(view) + '">'
+//     + (view == 'details' ? (
+//       '<li class="header">'
+//       + '<span class="name">Name</span>'
+//       + '<span class="size">Size</span>'
+//       + '<span class="date">Modified</span>'
+//       + '</li>') : '');
+
+//   html += files.map(function (file) {
+//     var classes = [];
+//     var isDir = file.stat && file.stat.isDirectory();
+//     var path = dir.split('/').map(function (c) { return encodeURIComponent(c); });
+
+//     if (useIcons) {
+//       classes.push('icon');
+
+//       if (isDir) {
+//         classes.push('icon-directory');
+//       } else {
+//         var ext = extname(file.name);
+//         var icon = iconLookup(file.name);
+
+//         classes.push('icon');
+//         classes.push('icon-' + ext.substring(1));
+
+//         if (classes.indexOf(icon.className) === -1) {
+//           classes.push(icon.className);
+//         }
+//       }
+//     }
+
+//     path.push(encodeURIComponent(file.name));
+
+//     var date = file.stat && file.name !== '..'
+//       ? file.stat.mtime.toLocaleDateString() + ' ' + file.stat.mtime.toLocaleTimeString()
+//       : '';
+//     var size = file.stat && !isDir
+//       ? file.stat.size
+//       : '';
+
+//     // return '<li><a href="'
+//     //   + escapeHtml(normalizeSlashes(normalize(path.join('/'))))
+//     //   + '" class="' + escapeHtml(classes.join(' ')) + '"'
+//     //   + ' title="' + escapeHtml(file.name) + '">'
+//     //   + '<span class="name">' + escapeHtml(file.name) + '</span>'
+//     //   + '<span class="size">' + escapeHtml(convertUnit(size)) + '</span>'
+//     //   + '<span class="date">' + escapeHtml(date) + '</span>'
+//     //   + '</a></li>';
+//     return '<li><a href="'
+//       + escapeHtml(normalizeSlashes(normalize(path.join('/'))))
+//       + '" class="' + escapeHtml(classes.join(' ')) + '"'
+//       + ' title="' + escapeHtml(file.name) + '">'
+//       + '<span class="name">' + escapeHtml(file.name) + '</span>'
+//       + '<span class="size">' + escapeHtml(convertFileSize(size)) + '</span>'
+//       + '<span class="date">' + escapeHtml(convertFileDate(date)) + '</span>'
+//       + '</a></li>';
+//   }).join('\n');
+
+//   html += '</ul>';
+
+//   return html;
+// }
+
 function createHtmlFileList(files, dir, useIcons, view) {
   var html = '<ul id="files" class="view-' + escapeHtml(view) + '">'
     + (view == 'details' ? (
@@ -291,8 +355,8 @@ function createHtmlFileList(files, dir, useIcons, view) {
       + '" class="' + escapeHtml(classes.join(' ')) + '"'
       + ' title="' + escapeHtml(file.name) + '">'
       + '<span class="name">' + escapeHtml(file.name) + '</span>'
-      + '<span class="size">' + escapeHtml(convertUnit(size)) + '</span>'
-      + '<span class="date">' + escapeHtml(date) + '</span>'
+      + '<span class="size">' + escapeHtml(convertFileSize(size)) + '</span>'
+      + '<span class="date">' + escapeHtml(convertFileDate(date)) + '</span>'
       + '</a></li>';
   }).join('\n');
 
@@ -300,6 +364,10 @@ function createHtmlFileList(files, dir, useIcons, view) {
 
   return html;
 }
+
+
+
+
 
 /**
  * Create function to render html.
