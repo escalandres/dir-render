@@ -285,7 +285,7 @@ serveIndex.plain = function _plain(req, res, files) {
 //     //   + '<span class="name">' + escapeHtml(file.name) + '</span>'
 //     //   + '<span class="size">' + escapeHtml(convertUnit(size)) + '</span>'
 //     //   + '<span class="date">' + escapeHtml(date) + '</span>'
-//     //   + '</a></li>';
+//     //   + '</a></li>'; 
 //     return '<li><a href="'
 //       + escapeHtml(normalizeSlashes(normalize(path.join('/'))))
 //       + '" class="' + escapeHtml(classes.join(' ')) + '"'
