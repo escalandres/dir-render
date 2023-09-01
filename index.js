@@ -14,7 +14,7 @@
  */
 
 // npm i depd http-errors inherits setprototypeof statuses
-
+const convertUnit = require('convertFileUnit')
 var accepts = require('accepts');
 var createError = require('http-errors');
 var debug = require('debug')('serve-index');
@@ -278,12 +278,20 @@ function createHtmlFileList(files, dir, useIcons, view) {
       ? file.stat.size
       : '';
 
+    // return '<li><a href="'
+    //   + escapeHtml(normalizeSlashes(normalize(path.join('/'))))
+    //   + '" class="' + escapeHtml(classes.join(' ')) + '"'
+    //   + ' title="' + escapeHtml(file.name) + '">'
+    //   + '<span class="name">' + escapeHtml(file.name) + '</span>'
+    //   + '<span class="size">' + escapeHtml(convertUnit(size)) + '</span>'
+    //   + '<span class="date">' + escapeHtml(date) + '</span>'
+    //   + '</a></li>';
     return '<li><a href="'
       + escapeHtml(normalizeSlashes(normalize(path.join('/'))))
       + '" class="' + escapeHtml(classes.join(' ')) + '"'
       + ' title="' + escapeHtml(file.name) + '">'
       + '<span class="name">' + escapeHtml(file.name) + '</span>'
-      + '<span class="size">' + escapeHtml(size) + '</span>'
+      + '<span class="size">' + escapeHtml(convertUnit(size)) + '</span>'
       + '<span class="date">' + escapeHtml(date) + '</span>'
       + '</a></li>';
   }).join('\n');

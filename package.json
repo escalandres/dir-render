@@ -8,5 +8,12 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "depd": "^2.0.0",
+    "http-errors": "^2.0.0",
+    "inherits": "^2.0.4",
+    "setprototypeof": "^1.2.0",
+    "statuses": "^2.0.1"
+  }
 }
