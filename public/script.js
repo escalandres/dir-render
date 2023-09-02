@@ -1,19 +1,6 @@
-var lastClickTime = 0;
-
-function handleRowDoubleClick(row) {
-    var currentTime = new Date().getTime();
-    if (currentTime - lastClickTime < 300) {
-        var selected = row.cells[0].innerHTML;
-        var currentURL = window.location.href;
-        currentURL = currentURL.replace("table.html", "");
-        var newUrl = currentURL + selected;
-        window.location.href = newUrl
-    }
-    lastClickTime = currentTime;
-}
-
 document.addEventListener("DOMContentLoaded", function() {
-    var rows = document.querySelectorAll("tr");
+    var tbody = document.querySelector("tbody"); // Selecciona el tbody en lugar de todas las filas
+    var rows = tbody.querySelectorAll("tr"); // Selecciona solo las filas dentro del tbody
     
     rows.forEach(function(row) {
         row.addEventListener("click", function() {
@@ -26,4 +13,40 @@ document.addEventListener("DOMContentLoaded", function() {
             this.classList.add("selected-row");
         });
     });
+});
+$(document).ready(function() {
+var table = $('#fileTable').DataTable({
+"ordering": true,
+"order": [[0, "asc"]],
+"searching": true,
+"lengthChange": false,
+"language": {
+"search": "Buscar:",
+"searchPlaceholder": "Buscar en la tabla"
+},
+"paging": false, // Deshabilitar la paginación de DataTables
+"columns": [
+    { "width": "60%", "data": "name" },
+    { "width": "10%", "data": "size" },
+    { "width": "30%", "data": "date_modified" }
+],
+"columnDefs": [
+    { "targets": 0, "className": "text-left" },
+    { "targets": [1,2], "className": "text-center", "searchable": false }
+]
+});
+
+// Manejo del doble clic en DataTables
+$('#fileTable tbody').on('dblclick', 'tr', function () {
+var data = table.row(this).data();
+var selected = data["name"]; // Obtener el contenido de la primera columna
+var currentURL = window.location.href;
+var newUrl = currentURL + selected;
+window.location.href = newUrl;
+});
+
+// Agregar evento de entrada de búsqueda personalizado
+$('#custom-search').on('keyup', function() {
+    table.search(this.value).draw();
+});
 });
