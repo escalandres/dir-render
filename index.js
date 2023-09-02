@@ -253,8 +253,11 @@ function createHtmlFileList(files, dir, useIcons, view) {
     var classes = [];
     var isDir = file.stat && file.stat.isDirectory();
     var path = dir.split('/').map(function (c) { return encodeURIComponent(c); });
+    var iconClass = '';
 
     if (useIcons) {
+      var ext = extname(file.name);
+      iconClass = 'icon-' + ext.substring(1);
       classes.push('icon');
 
       if (isDir) {
