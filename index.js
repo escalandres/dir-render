@@ -47,13 +47,13 @@ var cache = {};
  * Default template.
  */
 
-var defaultTemplate = join(__dirname, 'public', 'directory.html');
+var defaultTemplate = join(__dirname, 'public', 'template.html');
 
 /*!
  * Stylesheet.
  */
 
-var defaultStylesheet = join(__dirname, 'public', 'style.css');
+var defaultStylesheet = join(__dirname, 'public', 'directory.css');
 
 /**
  * Media types and the map for content negotiation.
