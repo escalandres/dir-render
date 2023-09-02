@@ -434,7 +434,7 @@ function iconStyle(files, useIcons) {
     selector = '#files .' + icon.className + ' .name';
 
     if (!rules[iconName]) {
-      rules[iconName] = 'background-image: url(data:image/svg+xml;base64,' + btoa(loadSVG(iconName)) + ');';
+      rules[iconName] = 'background-image: url(data:image/svg+xml;base64,' + btoa(load(iconName)) + ');';
       selectors[iconName] = [];
       list.push(iconName);
     }
