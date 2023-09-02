@@ -28,6 +28,7 @@ var Batch = require('batch');
 var mime = require('mime-types');
 var parseUrl = require('parseurl');
 const { convertFileSize, convertFileDate } = require('./convertUnit');
+const { getFileIcon } = require('./icons');
 var resolve = require('path').resolve;
 
 /**
@@ -254,10 +255,13 @@ function createHtmlFileList(files, dir, useIcons, view) {
     var isDir = file.stat && file.stat.isDirectory();
     var path = dir.split('/').map(function (c) { return encodeURIComponent(c); });
     var iconClass = '';
-
+    console.log(file)
     if (useIcons) {
       var ext = extname(file.name);
-      iconClass = 'icon-' + ext.substring(1);
+      console.log('ext',ext.substring(1))
+      // iconClass = 'icon-' + ext.substring(1);
+      iconClass = getFileIcon(ext);
+      console.log('clase',iconClass)
       classes.push('icon');
 
       if (isDir) {
@@ -285,7 +289,7 @@ function createHtmlFileList(files, dir, useIcons, view) {
       : '';
 
     return '<tr title="' + escapeHtml(file.name) + '">'
-      + '<td class="name"><i id="" class="i-icon'+ iconClass + '">' + escapeHtml(file.name) + '</td>'
+      + '<td class="name"><i id="" class="i-icon '+ iconClass + '"></i>' + escapeHtml(file.name) + '</td>'
       + '<td class="size">' + escapeHtml(convertFileSize(size)) + '</td>'
       + '<td class="date">' + escapeHtml(convertFileDate(date)) + '</td>'
       + '</tr>';
@@ -651,3 +655,5 @@ var icons = {
   '.xlsx': 'excel.svg',
   '.yaws': 'code.svg'
 };
+
+
