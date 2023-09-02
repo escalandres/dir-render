@@ -302,14 +302,24 @@ serveIndex.plain = function _plain(req, res, files) {
 // }
 
 function createHtmlFileList(files, dir, useIcons, view) {
-  var html = '<ul id="files" class="view-' + escapeHtml(view) + '">'
-    + (view == 'details' ? (
-      '<li class="header">'
-      + '<span class="name">Name</span>'
-      + '<span class="size">Size</span>'
-      + '<span class="date">Modified</span>'
-      + '</li>') : '');
-
+  // var html = '<ul id="files" class="view-' + escapeHtml(view) + '">'
+  //   + (view == 'details' ? (
+  //     '<li class="header">'
+  //     + '<span class="name">Name</span>'
+  //     + '<span class="size">Size</span>'
+  //     + '<span class="date">Modified</span>'
+  //     + '</li>') : '');
+  var html = '<div class="table-responsive">'
+      + '<table id="fileTable" class="table table-hover borderless">'
+      + (view == 'details' ? (
+        '<thead>'
+          + '<tr>'
+            + '<th>Name</th>'
+            + '<th>Size</th>'
+            + '<th>Date Modified</th>'
+          + '</tr>'
+        + '</thead>'
+        + '<tbody>') : '');
   html += files.map(function (file) {
     var classes = [];
     var isDir = file.stat && file.stat.isDirectory();
@@ -508,7 +518,7 @@ function iconStyle(files, useIcons) {
     selector = '#files .' + icon.className + ' .name';
 
     if (!rules[iconName]) {
-      rules[iconName] = 'background-image: url(data:image/png;base64,' + load(iconName) + ');'
+      rules[iconName] = 'background-image: url(data:image/svg+xml;base64,' + btoa(loadSVG(iconName)) + ');';
       selectors[iconName] = [];
       list.push(iconName);
     }
@@ -614,111 +624,111 @@ function stat(dir, files, cb) {
 
 var icons = {
   // base icons
-  'default': 'page_white.png',
-  'folder': 'folder.png',
+  'default': 'unknown.svg',
+  'folder': 'folder.svg',
 
   // generic mime type icons
-  'image': 'image.png',
-  'text': 'page_white_text.png',
-  'video': 'film.png',
+  'image': 'img.svg',
+  'text': 'txt.svg',
+  'video': 'video.svg',
 
   // generic mime suffix icons
-  '+json': 'page_white_code.png',
-  '+xml': 'page_white_code.png',
-  '+zip': 'box.png',
+  '+json': 'code.svg',
+  '+xml': 'xml.svg',
+  '+zip': 'compressed.svg',
 
   // specific mime type icons
-  'application/font-woff': 'font.png',
-  'application/javascript': 'page_white_code_red.png',
-  'application/json': 'page_white_code.png',
-  'application/msword': 'page_white_word.png',
-  'application/pdf': 'page_white_acrobat.png',
-  'application/postscript': 'page_white_vector.png',
-  'application/rtf': 'page_white_word.png',
-  'application/vnd.ms-excel': 'page_white_excel.png',
-  'application/vnd.ms-powerpoint': 'page_white_powerpoint.png',
-  'application/vnd.oasis.opendocument.presentation': 'page_white_powerpoint.png',
-  'application/vnd.oasis.opendocument.spreadsheet': 'page_white_excel.png',
-  'application/vnd.oasis.opendocument.text': 'page_white_word.png',
-  'application/x-7z-compressed': 'box.png',
-  'application/x-sh': 'application_xp_terminal.png',
-  'application/x-font-ttf': 'font.png',
-  'application/x-msaccess': 'page_white_database.png',
-  'application/x-shockwave-flash': 'page_white_flash.png',
-  'application/x-sql': 'page_white_database.png',
-  'application/x-tar': 'box.png',
-  'application/x-xz': 'box.png',
-  'application/xml': 'page_white_code.png',
-  'application/zip': 'box.png',
-  'image/svg+xml': 'page_white_vector.png',
-  'text/css': 'page_white_code.png',
-  'text/html': 'page_white_code.png',
-  'text/less': 'page_white_code.png',
+  'application/font-woff': 'font.svg',
+  'application/javascript': 'js.svg',
+  'application/json': 'code.svg',
+  'application/msword': 'word.svg',
+  'application/pdf': 'pdf.svg',
+  'application/postscript': 'svg.svg',
+  'application/rtf': 'word.svg',
+  'application/vnd.ms-excel': 'excel.svg',
+  'application/vnd.ms-powerpoint': 'ppt.svg',
+  'application/vnd.oasis.opendocument.presentation': 'ppt.svg',
+  'application/vnd.oasis.opendocument.spreadsheet': 'excel.svg',
+  'application/vnd.oasis.opendocument.text': 'word.svg',
+  'application/x-7z-compressed': 'compressed.svg',
+  'application/x-sh': 'terminal.svg',
+  'application/x-font-ttf': 'font.svg',
+  'application/x-msaccess': 'database.svg',
+  'application/x-shockwave-flash': 'code.svg',
+  'application/x-sql': 'database.svg',
+  'application/x-tar': 'compressed.svg',
+  'application/x-xz': 'compressed.svg',
+  'application/xml': 'xml.svg',
+  'application/zip': 'compressed.svg',
+  'image/svg+xml': 'svg.svg',
+  'text/css': 'css.svg',
+  'text/html': 'html.svg',
+  'text/less': 'code.svg',
 
   // other, extension-specific icons
-  '.accdb': 'page_white_database.png',
-  '.apk': 'box.png',
-  '.app': 'application_xp.png',
-  '.as': 'page_white_actionscript.png',
-  '.asp': 'page_white_code.png',
-  '.aspx': 'page_white_code.png',
-  '.bat': 'application_xp_terminal.png',
-  '.bz2': 'box.png',
-  '.c': 'page_white_c.png',
-  '.cab': 'box.png',
-  '.cfm': 'page_white_coldfusion.png',
-  '.clj': 'page_white_code.png',
-  '.cc': 'page_white_cplusplus.png',
-  '.cgi': 'application_xp_terminal.png',
-  '.cpp': 'page_white_cplusplus.png',
-  '.cs': 'page_white_csharp.png',
-  '.db': 'page_white_database.png',
-  '.dbf': 'page_white_database.png',
-  '.deb': 'box.png',
-  '.dll': 'page_white_gear.png',
-  '.dmg': 'drive.png',
-  '.docx': 'page_white_word.png',
-  '.erb': 'page_white_ruby.png',
-  '.exe': 'application_xp.png',
-  '.fnt': 'font.png',
-  '.gam': 'controller.png',
-  '.gz': 'box.png',
-  '.h': 'page_white_h.png',
-  '.ini': 'page_white_gear.png',
-  '.iso': 'cd.png',
-  '.jar': 'box.png',
-  '.java': 'page_white_cup.png',
-  '.jsp': 'page_white_cup.png',
-  '.lua': 'page_white_code.png',
-  '.lz': 'box.png',
-  '.lzma': 'box.png',
-  '.m': 'page_white_code.png',
-  '.map': 'map.png',
-  '.msi': 'box.png',
-  '.mv4': 'film.png',
-  '.otf': 'font.png',
-  '.pdb': 'page_white_database.png',
-  '.php': 'page_white_php.png',
-  '.pl': 'page_white_code.png',
-  '.pkg': 'box.png',
-  '.pptx': 'page_white_powerpoint.png',
-  '.psd': 'page_white_picture.png',
-  '.py': 'page_white_code.png',
-  '.rar': 'box.png',
-  '.rb': 'page_white_ruby.png',
-  '.rm': 'film.png',
-  '.rom': 'controller.png',
-  '.rpm': 'box.png',
-  '.sass': 'page_white_code.png',
-  '.sav': 'controller.png',
-  '.scss': 'page_white_code.png',
-  '.srt': 'page_white_text.png',
-  '.tbz2': 'box.png',
-  '.tgz': 'box.png',
-  '.tlz': 'box.png',
-  '.vb': 'page_white_code.png',
-  '.vbs': 'page_white_code.png',
-  '.xcf': 'page_white_picture.png',
-  '.xlsx': 'page_white_excel.png',
-  '.yaws': 'page_white_code.png'
+  '.accdb': 'database.svg',
+  '.apk': 'apk.svg',
+  '.app': 'application_xp.svg',
+  '.as': 'page_white_actionscript.svg',
+  '.asp': 'code.svg',
+  '.aspx': 'code.svg',
+  '.bat': 'terminal.svg',
+  '.bz2': 'compressed.svg',
+  '.c': 'code.svg',
+  '.cab': 'compressed.svg',
+  '.cfm': 'code.svg',
+  '.clj': 'code.svg',
+  '.cc': 'code.svg',
+  '.cgi': 'terminal.svg',
+  '.cpp': 'code.svg',
+  '.cs': 'code.svg',
+  '.db': 'database.svg',
+  '.dbf': 'database.svg',
+  '.deb': 'compressed.svg',
+  '.dll': 'gear.svg',
+  '.dmg': 'drive.svg',
+  '.docx': 'word.svg',
+  '.erb': 'code.svg',
+  '.exe': 'exe.svg',
+  '.fnt': 'font.svg',
+  '.gam': 'controller.svg',
+  '.gz': 'compressed.svg',
+  '.h': 'code.svg',
+  '.ini': 'gear.svg',
+  '.iso': 'cd.svg',
+  '.jar': 'compressed.svg',
+  '.java': 'code.svg',
+  '.jsp': 'code.svg',
+  '.lua': 'code.svg',
+  '.lz': 'compressed.svg',
+  '.lzma': 'compressed.svg',
+  '.m': 'code.svg',
+  '.map': 'map.svg',
+  '.msi': 'compressed.svg',
+  '.mv4': 'video.svg',
+  '.otf': 'font.svg',
+  '.pdb': 'database.svg',
+  '.php': 'code.svg',
+  '.pl': 'code.svg',
+  '.pkg': 'compressed.svg',
+  '.pptx': 'ppt.svg',
+  '.psd': 'img.svg',
+  '.py': 'code.svg',
+  '.rar': 'compressed.svg',
+  '.rb': 'code.svg',
+  '.rm': 'video.svg',
+  '.rom': 'controller.svg',
+  '.rpm': 'compressed.svg',
+  '.sass': 'code.svg',
+  '.sav': 'controller.svg',
+  '.scss': 'code.svg',
+  '.srt': 'txt.svg',
+  '.tbz2': 'compressed.svg',
+  '.tgz': 'compressed.svg',
+  '.tlz': 'compressed.svg',
+  '.vb': 'code.svg',
+  '.vbs': 'code.svg',
+  '.xcf': 'img.svg',
+  '.xlsx': 'excel.svg',
+  '.yaws': 'code.svg'
 };
