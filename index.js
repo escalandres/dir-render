@@ -82,12 +82,12 @@ var mediaType = {
  * @public
  */
 
-function serveIndex(root, options) {
+function dirRender(root, options) {
   var opts = options || {};
 
   // root required
   if (!root) {
-    throw new TypeError('serveIndex() root path required');
+    throw new TypeError('dirRender() root path required');
   }
 
   // resolve root to absolute and normalize
@@ -162,7 +162,7 @@ function serveIndex(root, options) {
 
         // not acceptable
         if (!type) return next(createError(406));
-        serveIndex[mediaType[type]](req, res, files, next, originalDir, showUp, icons, path, view, template, stylesheet);
+        dirRender[mediaType[type]](req, res, files, next, originalDir, showUp, icons, path, view, template, stylesheet);
       });
     });
   };
@@ -172,7 +172,7 @@ function serveIndex(root, options) {
  * Respond with text/html.
  */
 
-serveIndex.html = function _html(req, res, files, next, dir, showUp, icons, path, view, template, stylesheet) {
+dirRender.html = function _html(req, res, files, next, dir, showUp, icons, path, view, template, stylesheet) {
   var render = typeof template !== 'function'
     ? createHtmlRender(template)
     : template
@@ -220,7 +220,7 @@ serveIndex.html = function _html(req, res, files, next, dir, showUp, icons, path
  * Respond with application/json.
  */
 
-serveIndex.json = function _json(req, res, files) {
+dirRender.json = function _json(req, res, files) {
   send(res, 'application/json', JSON.stringify(files))
 };
 
@@ -228,7 +228,7 @@ serveIndex.json = function _json(req, res, files) {
  * Respond with text/plain.
  */
 
-serveIndex.plain = function _plain(req, res, files) {
+dirRender.plain = function _plain(req, res, files) {
   send(res, 'text/plain', (files.join('\n') + '\n'))
 };
 
@@ -237,86 +237,15 @@ serveIndex.plain = function _plain(req, res, files) {
  * @private
  */
 
-// function createHtmlFileList(files, dir, useIcons, view) {
-//   var html = '<ul id="files" class="view-' + escapeHtml(view) + '">'
-//     + (view == 'details' ? (
-//       '<li class="header">'
-//       + '<span class="name">Name</span>'
-//       + '<span class="size">Size</span>'
-//       + '<span class="date">Modified</span>'
-//       + '</li>') : '');
-
-//   html += files.map(function (file) {
-//     var classes = [];
-//     var isDir = file.stat && file.stat.isDirectory();
-//     var path = dir.split('/').map(function (c) { return encodeURIComponent(c); });
-
-//     if (useIcons) {
-//       classes.push('icon');
-
-//       if (isDir) {
-//         classes.push('icon-directory');
-//       } else {
-//         var ext = extname(file.name);
-//         var icon = iconLookup(file.name);
-
-//         classes.push('icon');
-//         classes.push('icon-' + ext.substring(1));
-
-//         if (classes.indexOf(icon.className) === -1) {
-//           classes.push(icon.className);
-//         }
-//       }
-//     }
-
-//     path.push(encodeURIComponent(file.name));
-
-//     var date = file.stat && file.name !== '..'
-//       ? file.stat.mtime.toLocaleDateString() + ' ' + file.stat.mtime.toLocaleTimeString()
-//       : '';
-//     var size = file.stat && !isDir
-//       ? file.stat.size
-//       : '';
-
-//     // return '<li><a href="'
-//     //   + escapeHtml(normalizeSlashes(normalize(path.join('/'))))
-//     //   + '" class="' + escapeHtml(classes.join(' ')) + '"'
-//     //   + ' title="' + escapeHtml(file.name) + '">'
-//     //   + '<span class="name">' + escapeHtml(file.name) + '</span>'
-//     //   + '<span class="size">' + escapeHtml(convertUnit(size)) + '</span>'
-//     //   + '<span class="date">' + escapeHtml(date) + '</span>'
-//     //   + '</a></li>'; 
-//     return '<li><a href="'
-//       + escapeHtml(normalizeSlashes(normalize(path.join('/'))))
-//       + '" class="' + escapeHtml(classes.join(' ')) + '"'
-//       + ' title="' + escapeHtml(file.name) + '">'
-//       + '<span class="name">' + escapeHtml(file.name) + '</span>'
-//       + '<span class="size">' + escapeHtml(convertFileSize(size)) + '</span>'
-//       + '<span class="date">' + escapeHtml(convertFileDate(date)) + '</span>'
-//       + '</a></li>';
-//   }).join('\n');
-
-//   html += '</ul>';
-
-//   return html;
-// }
-
 function createHtmlFileList(files, dir, useIcons, view) {
-  // var html = '<ul id="files" class="view-' + escapeHtml(view) + '">'
-  //   + (view == 'details' ? (
-  //     '<li class="header">'
-  //     + '<span class="name">Name</span>'
-  //     + '<span class="size">Size</span>'
-  //     + '<span class="date">Modified</span>'
-  //     + '</li>') : '');
   var html = '<div class="table-responsive">'
       + '<table id="fileTable" class="table table-hover borderless">'
       + (view == 'details' ? (
         '<thead>'
           + '<tr>'
             + '<th>Name</th>'
-            + '<th>Size</th>'
             + '<th>Date Modified</th>'
+            + '<th>Size</th>'
           + '</tr>'
         + '</thead>'
         + '<tbody>') : '');
@@ -352,32 +281,19 @@ function createHtmlFileList(files, dir, useIcons, view) {
       ? file.stat.size
       : '';
 
-    // return '<li><a href="'
-    //   + escapeHtml(normalizeSlashes(normalize(path.join('/'))))
-    //   + '" class="' + escapeHtml(classes.join(' ')) + '"'
-    //   + ' title="' + escapeHtml(file.name) + '">'
-    //   + '<span class="name">' + escapeHtml(file.name) + '</span>'
-    //   + '<span class="size">' + escapeHtml(convertUnit(size)) + '</span>'
-    //   + '<span class="date">' + escapeHtml(date) + '</span>'
-    //   + '</a></li>';
-    return '<li><a href="'
-      + escapeHtml(normalizeSlashes(normalize(path.join('/'))))
-      + '" class="' + escapeHtml(classes.join(' ')) + '"'
-      + ' title="' + escapeHtml(file.name) + '">'
-      + '<span class="name">' + escapeHtml(file.name) + '</span>'
-      + '<span class="size">' + escapeHtml(convertFileSize(size)) + '</span>'
-      + '<span class="date">' + escapeHtml(convertFileDate(date)) + '</span>'
-      + '</a></li>';
+    return '<tr title="' + escapeHtml(file.name) + '">'
+      + '<td class="name"><i id="" class="i-icon'+ iconClass + '">' + escapeHtml(file.name) + '</td>'
+      + '<td class="size">' + escapeHtml(convertFileSize(size)) + '</td>'
+      + '<td class="date">' + escapeHtml(convertFileDate(date)) + '</td>'
+      + '</tr>';
   }).join('\n');
 
-  html += '</ul>';
+  html += '</tbody>';
+  html += '</table>';
+  html += '</div>';
 
   return html;
 }
-
-
-
-
 
 /**
  * Create function to render html.
