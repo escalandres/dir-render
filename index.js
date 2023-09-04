@@ -28,7 +28,7 @@ var Batch = require('batch');
 var mime = require('mime-types');
 var parseUrl = require('parseurl');
 const { convertFileSize, convertFileDate } = require('./convertUnit');
-const { getFileIcon } = require('./icons');
+const { getFileIcon, generateIconClasses } = require('./icons');
 var resolve = require('path').resolve;
 
 /**
@@ -239,6 +239,7 @@ dirRender.plain = function _plain(req, res, files) {
  */
 
 function createHtmlFileList(files, dir, useIcons, view) {
+  // generateIconClasses();
   var html = '<div class="table-responsive">'
       + '<table id="fileTable" class="table table-hover borderless">'
       + (view == 'details' ? (
