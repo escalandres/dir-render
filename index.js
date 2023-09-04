@@ -290,8 +290,8 @@ function createHtmlFileList(files, dir, useIcons, view) {
 
     return '<tr title="' + escapeHtml(file.name) + '">'
       + '<td class="name"><i id="" class="i-icon '+ iconClass + '"></i>' + escapeHtml(file.name) + '</td>'
-      + '<td class="size">' + escapeHtml(convertFileSize(size)) + '</td>'
       + '<td class="date">' + escapeHtml(convertFileDate(date)) + '</td>'
+      + '<td class="size">' + escapeHtml(convertFileSize(size)) + '</td>'
       + '</tr>';
   }).join('\n');
 

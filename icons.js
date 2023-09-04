@@ -11,6 +11,7 @@ var icons = {
     '.bmp': 'img-icon',
     '.tiff': 'img-icon',
     '.svg': 'svg-icon',
+    '.webp': 'img-icon',
 
     // tipos de archivo de audio
     '.mp3': 'audio-icon',
